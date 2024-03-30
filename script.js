@@ -1,12 +1,12 @@
 import * as THREE from "three";
-import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 console.clear();
 
 let scene = new THREE.Scene();
 let camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 1, 1000);
 camera.position.set(0, 10, 10).setLength(17);
-let renderer = new THREE.WebGLRenderer({antialias: true});
+let renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -20,20 +20,21 @@ let controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
 let gu = {
-  time: {value: 0}
+  time: { value: 0 }
 }
 
 let params = {
-  instanceCount: {value: 10},
-  instanceLength: {value: 1.75},
-  instanceGap: {value: 0.5},
-  profileFactor: {value: 1.5}
+  instanceCount: { value: 10 },
+  instanceLength: { value: 1.75 },
+  instanceGap: { value: 0.5 },
+  profileFactor: { value: 1.5 }
 }
 
-let ig = new THREE.InstancedBufferGeometry().copy(new THREE.BoxGeometry(1, 1, 1, 100, 1, 1).translate(0.5, 0, 0));
-ig.instanceCount = params.instanceCount.value;
+let loader = new THREE.TextureLoader();
+let texture = loader.load('acapulco1.jpeg'); // Reemplaza 'path/to/your/image.jpg' por la ruta de tu imagen
 
 let m = new THREE.MeshBasicMaterial({
+  map: texture, // Aplicar la textura al material
   vertexColors: true,
   onBeforeCompile: shader => {
     shader.uniforms.time = gu.time;
@@ -96,7 +97,6 @@ let m = new THREE.MeshBasicMaterial({
         vColor = vec3(nZ == 1. ? 0.1 : nX == 1. ? 0. : 0.01);
       `
     );
-    //console.log(shader.vertexShader);
     shader.fragmentShader = `
       varying float noGrid;
       
@@ -116,10 +116,9 @@ let m = new THREE.MeshBasicMaterial({
         diffuseColor.rgb = mix(diffuseColor.rgb, vec3(1), max(edges, grid));
       `
     )
-    //console.log(shader.fragmentShader)
   }
 });
-m.defines = {"USE_UV": ""};
+m.defines = { "USE_UV": "" };
 
 let o = new THREE.Mesh(ig, m);
 scene.add(o)
@@ -128,7 +127,7 @@ o.rotation.z = -Math.PI * 0.25;
 let clock = new THREE.Clock();
 let t = 0;
 
-renderer.setAnimationLoop(()=>{
+renderer.setAnimationLoop(() => {
   let dt = clock.getDelta();
   t += dt;
   gu.time.value = t;
