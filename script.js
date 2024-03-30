@@ -31,18 +31,20 @@ let params = {
 }
 
 let loader = new THREE.TextureLoader();
-let texture = loader.load('./acapulco1.jpeg'); // Reemplaza 'path/to/your/image.jpg' con la ruta de tu imagen
+let texture = loader.load('acapulco1.jpeg', () => {
+  let ig = new THREE.InstancedBufferGeometry().copy(new THREE.BoxGeometry(1, 1, 1, 100, 1, 1).translate(0.5, 0, 0));
+  ig.instanceCount = params.instanceCount.value;
 
-let m = new THREE.MeshStandardMaterial({
-  map: texture, // Aplicar la textura al material
-  color: 0xffffff, // Color base del material
-  roughness: 0.5, // Rugosidad del material
-  metalness: 0.5 // Metalicidad del material
+  let materials = new THREE.MeshStandardMaterial({
+    map: texture, // Aplicar la textura al material
+    color: 0xffffff, // Color base del material
+    roughness: 0.5, // Rugosidad del material
+    metalness: 0.5 // Metalicidad del material
+  });
+
+  let mesh = new THREE.Mesh(ig, materials);
+  scene.add(mesh);
 });
-
-let o = new THREE.Mesh(ig, m);
-scene.add(o)
-o.rotation.z = -Math.PI * 0.25;
 
 let clock = new THREE.Clock();
 let t = 0;
