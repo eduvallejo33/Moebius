@@ -31,7 +31,7 @@ let params = {
 }
 
 let loader = new THREE.TextureLoader();
-let texture = loader.load('acapulco1.jpeg'); // Reemplaza 'path/to/your/image.jpg' con la ruta de tu imagen
+let texture = loader.load('./acapulco1.jpeg'); // Reemplaza 'path/to/your/image.jpg' con la ruta de tu imagen
 
 let m = new THREE.MeshStandardMaterial({
   map: texture, // Aplicar la textura al material
